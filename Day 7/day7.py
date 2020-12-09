@@ -43,7 +43,7 @@ def inside_bag(bags_rules,outer_bag,inner_bag):
         for possible_bag in value:
             if inside_bag(bags_rules,possible_bag,inner_bag): #if contains
                 return True
-        return False #if it's recursively gone through everything, return false
+        return False #if it's recursively gone through everything
 
 
 def get_bags_rules_with_counts(lines):
@@ -78,7 +78,6 @@ def count_inner_bags(bags_rules,outer_bag):
         return inner_bag_count
     #print(bags_rules[outer_bag][1][1])# for count
     for bag, count in inner_bags:
-
         inner_bag_count += (count + count * count_inner_bags(bags_rules,bag)) #count bag itself and multiply by inner amount
 
     return inner_bag_count
@@ -89,7 +88,7 @@ if __name__ == "__main__":
         lines = f.readlines()
     #part 1
     contains_shiny_gold = contains_bag(lines,"shiny gold")
-    print(contains_shiny_gold)
+    #print(contains_shiny_gold)
     print(len(contains_shiny_gold))
     #part 2
     print(count_inner_bags(get_bags_rules_with_counts(lines),"shiny gold"))
