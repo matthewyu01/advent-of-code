@@ -1,9 +1,6 @@
 import re
 import time
 
-import multiprocessing
-#import joblib
-
 
 def part1(lines):
     earliest_time = int(lines[0])
@@ -28,47 +25,38 @@ def part1(lines):
 
 def part2(line):
     id_list = line.split(',')
-    first_time = int(id_list[0])
-    last_index = len(id_list) - 1
-
     actual_ids_list = [int(num) for num in re.findall(r'[0-9]+', line)]
-    max_time = max(actual_ids_list)
-    max_time_str = str(max_time)
-    max_time_index = id_list.index(max_time_str)
 
-    earliest_time = max_time - max_time_index
+    first_num = actual_ids_list[0]
 
-    if len(id_list) > 1:
-        second_max_time = sorted(actual_ids_list)[-2]
-        second_max_index = id_list.index(str(second_max_time))
-        #print(max_time_index,second_max_index)
-        n = 0
-        while True:
-            if n % max_time == (max_time - max_time_index) and ((second_max_time - (n % second_max_time)) % second_max_time == second_max_index):
-                earliest_time = n
-                break
-            n += 1
-
+    nums_aligned = []
+    aligned_product = 1
+    aligned_time = 0
+    max_aligned = len(actual_ids_list) - 1
     
-    while True:
-        time = earliest_time
-   
-        for i,bus_id in enumerate(id_list):
-            if bus_id == 'x':
-                time += 1
-                continue
-            if time % int(bus_id) != 0:
+    times_left_sorted = sorted(actual_ids_list[1:])
+
+    while len(nums_aligned) < max_aligned:
+        n = aligned_time
+        max_time = times_left_sorted[-1]
+        max_time_index = id_list.index(str(max_time))
+        times_left_sorted.remove(max_time)
+        while True:
+            #needed the last %max_time since max_time_index > max_time
+            if (n % max_time == ((max_time - max_time_index) % max_time)): 
+                nums_aligned.append(n)
+                aligned_product *= max_time
+                aligned_time = n
                 break
-            time += 1
+            n += aligned_product
 
-            if i == last_index:
-                return earliest_time
-        #print(earliest_time, max_time_index,max_time)    
-        if len(id_list) > 1:        
-            earliest_time += (max_time * second_max_time)
-        else:
-            earliest_time += max_time
+    while True:
+        if aligned_time % first_num == 0:
+            return aligned_time
+        aligned_time += aligned_product
 
+    return aligned_time
+	
 
 def explore_multiples():
     m1 = 911
@@ -76,7 +64,6 @@ def explore_multiples():
     m2 = 827
     m2_index = 72 
 
-    
     for n in range(1000000):
         if n % m1 == (m1 - m1_index) and n % m2 == (m2-m2_index):
             print(n)
@@ -90,17 +77,17 @@ if __name__ == "__main__":
     print(part1(['939', '7,13,x,x,59,x,31,19']))
     print(f"P1: {part1(lines)}\n\n")
     
-    t0 = time.time()
-    print(part2('17,x,13,19'))
-    t1 = time.time()
-    print(t1-t0)
-
-    num_cores = multiprocessing.cpu_count()
-    
-
-    t0 = time.time()
-    print(part2('1789,37,47,1889')) 
-    t1 = time.time()
-    print(t1-t0) #0.6154799461364746 without parallelization
+    # t0 = time.time()
+    # print(part2('17,x,13,19'))
+    # t1 = time.time()
+    # print(t1-t0)
+    #assert(part2('67,7,x,59,61') == 1261476)
+    # t0 = time.time()
+    # print(part2('1789,37,47,1889')) 
+    # t1 = time.time()
+    # print(t1-t0) 
     #explore_multiples()
-    print(part2(lines[1]))
+    t0 = time.time()
+    print(f"P2: {part2(lines[1])}") 
+    t1 = time.time()
+    print(t1-t0)#basically same run time as less complicated inputs
