@@ -1,7 +1,9 @@
 import re
+import time
 
 
 def num_spoken(line, number_place = 2020):
+    a = time.time()
     num_memory = {}
     count_over_one = {}
     nums = [int(num) for num in re.findall(r"[0-9]+", line)]
@@ -13,16 +15,17 @@ def num_spoken(line, number_place = 2020):
         last_num = num
         turn += 1 
     
-    while turn <= number_place: #returns 2020th num
+    while turn <= number_place:
         #print(last_num)
         if count_over_one[last_num] == False: #first time
             last_num = 0
         else:
-            last_num = num_memory[last_num][0] - num_memory[last_num][1]
+            last_times = num_memory[last_num]
+            last_num = last_times[0] - last_times[1] #diff in turns between last two appearances
 
         over_one = count_over_one.get(last_num)
-        if over_one != None: #if it's been in
-            if over_one == False:
+        if over_one != None: #if num has appeared
+            if over_one == False: #if appeared more than once
                 num_memory[last_num] = (turn,num_memory[last_num])
                 count_over_one[last_num] = True
             else:
@@ -33,7 +36,6 @@ def num_spoken(line, number_place = 2020):
             count_over_one[last_num] = False        
 
         turn += 1 
-
 
     return last_num
 
@@ -51,7 +53,7 @@ def test_func():
 
 if __name__ == "__main__":
     input_str = '19,0,5,1,10,13'
-    
+
     #test_func()
     print(f"P1: {num_spoken(input_str)}")
     print(f"P2: {num_spoken(input_str, 30000000)}")
