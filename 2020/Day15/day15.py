@@ -3,44 +3,34 @@ import re
 
 def num_spoken(line, number_place = 2020):
     num_memory = {}
-    num_count = {}
+    count_over_one = {}
     nums = [int(num) for num in re.findall(r"[0-9]+", line)]
     turn = 1
 
-    for num in nums:
+    for num in nums: #assumes input is all diff numbers
         num_memory[num] = turn
-        num_count[num] = 1
+        count_over_one[num] = False
         last_num = num
         turn += 1 
     
     while turn <= number_place: #returns 2020th num
         #print(last_num)
-        if num_count[last_num] == 1: #first time
+        if count_over_one[last_num] == False: #first time
             last_num = 0
-            count = num_count.get(last_num)
-            if count != None: #if it's been in
-                num_count[last_num] = count + 1
-                if count == 1:
-                    num_memory[last_num] = (turn,num_memory[last_num])
-                else:
-                    previous_turn = num_memory[last_num][0]
-                    num_memory[last_num] = (turn,previous_turn)
-            else:
-                num_memory[last_num] = turn
-                num_count[last_num] = 1
         else:
             last_num = num_memory[last_num][0] - num_memory[last_num][1]
-            count = num_count.get(last_num)
-            if count != None: #if it's been in
-                num_count[last_num] = count + 1
-                if count == 1:
-                    num_memory[last_num] = (turn,num_memory[last_num])
-                else:
-                    previous_turn = num_memory[last_num][0]
-                    num_memory[last_num] = (turn,previous_turn)
+
+        over_one = count_over_one.get(last_num)
+        if over_one != None: #if it's been in
+            if over_one == False:
+                num_memory[last_num] = (turn,num_memory[last_num])
+                count_over_one[last_num] = True
             else:
-                num_memory[last_num] = turn
-                num_count[last_num] = 1
+                previous_turn = num_memory[last_num][0]
+                num_memory[last_num] = (turn,previous_turn)
+        else:
+            num_memory[last_num] = turn
+            count_over_one[last_num] = False        
 
         turn += 1 
 
