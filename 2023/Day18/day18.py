@@ -65,10 +65,10 @@ def part1(lines=LINES):
         dir, num, color = line.split(' ')
         num = int(num)
 
-        hex = color[2:-1]
-        num = int(hex[:-1], 16)
-        encode = {'0':'R', '1':'D', "2":'L','3':'U'}
-        dir = encode[hex[-1]]
+        # hex = color[2:-1]
+        # num = int(hex[:-1], 16)
+        # encode = {'0':'R', '1':'D', "2":'L','3':'U'}
+        # dir = encode[hex[-1]]
 
         dr,dc = dirs[dir]
         if r in lefts:
@@ -211,6 +211,12 @@ def part2(lines=LINES):
 
     return polygon.area + sum(abs(p[0] - p2[0]) + abs(p[1] - p2[1]) for p, p2 in pairwise(pts))//2 + 1 # i just guessed the dividing by 2 this after undershooting, then overshooting test answer
     # https://en.wikipedia.org/wiki/Pick's_theorem is why it works
+
+
+print(f'Part 1 Test Output: {part1(test1)}' )
+p1_actual = part1(LINES)
+subprocess.run("clip", text=True, input=str(p1_actual))
+print(f'Part 1 ACTUAL: {p1_actual}  COPIED!' )
 
 
 print(f'Part 2 Test Output: {part2(test2)}' )
